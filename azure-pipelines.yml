@@ -1,4 +1,7 @@
 # ASP.NET Core
+- task: Npm@1
+  inputs:
+    command: 'install'
 # Build and test ASP.NET Core projects targeting .NET Core.
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
@@ -8,8 +11,18 @@ trigger:
 
 pool:
   vmImage: windows-latest
+- task: CopyFiles@2
+  inputs:
+    Contents: '**/azuredeploy.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
 
 variables:
+- task: gulp@0
+  inputs:
+    gulpFile: 'gulpfile.js'
+    targets: 
+    gulpjs: 'node_modules/gulp/bin/gulp.js'
+    enableCodeCoverage: false
   buildConfiguration: 'Release'
 
 steps:
